@@ -2,12 +2,13 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-RUN npm install -g pnpm
+# Enable corepack to use the exact pnpm version from package.json
+RUN corepack enable && corepack prepare pnpm@10.4.1 --activate
 
 COPY package.json pnpm-lock.yaml* ./
 
-# Install ALL dependencies (including dev) so the build can run
-RUN pnpm install --frozen-lockfile
+# Install all dependencies (dev + prod) needed for the build
+RUN pnpm install
 
 COPY . .
 
